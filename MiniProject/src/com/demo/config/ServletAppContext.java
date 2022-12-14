@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -20,8 +21,8 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.demo.beans.LoginUserBean;
-import com.demo.interceptor.MenuInterceptor;
 import com.demo.interceptor.CheckInterceptor;
+import com.demo.interceptor.MenuInterceptor;
 import com.demo.mapper.BoardMapper;
 import com.demo.mapper.MenuMapper;
 import com.demo.mapper.UserMapper;
@@ -123,6 +124,11 @@ public class ServletAppContext implements WebMvcConfigurer {
 		reg1.addPathPatterns("/**"); // 모든 요청
 		reg2.addPathPatterns("/user/modify", "/user/logout", "/board/*");
 		reg2.excludePathPatterns("/board/main");
+	}
+	
+	@Bean
+	public StandardServletMultipartResolver multipartResolver() {
+		return new StandardServletMultipartResolver();
 	}
 
 }
