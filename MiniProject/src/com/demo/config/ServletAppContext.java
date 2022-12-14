@@ -1,5 +1,7 @@
 package com.demo.config;
 
+import javax.annotation.Resource;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -17,7 +19,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import com.demo.beans.LoginUserBean;
 import com.demo.interceptor.MenuInterceptor;
+import com.demo.interceptor.CheckInterceptor;
 import com.demo.mapper.BoardMapper;
 import com.demo.mapper.MenuMapper;
 import com.demo.mapper.UserMapper;
@@ -30,6 +34,7 @@ import com.demo.service.MenuService;
 //스캔할 패키지를 지정한다.
 @ComponentScan("com.demo.controller")
 @ComponentScan("com.demo.service")
+@ComponentScan("com.demo.beans")
 @PropertySource("/WEB-INF/properties/db.properties")
 public class ServletAppContext implements WebMvcConfigurer {
 
@@ -48,6 +53,9 @@ public class ServletAppContext implements WebMvcConfigurer {
 	@Autowired
 	private MenuService menuService;
 	
+	@Resource(name = "loginUserBean")
+	private LoginUserBean loginUserBean;
+
 	// 데이터베이스 접속 정보 관리
 	@Bean
 	public BasicDataSource dataSource() {
@@ -108,9 +116,13 @@ public class ServletAppContext implements WebMvcConfigurer {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		WebMvcConfigurer.super.addInterceptors(registry);
-		MenuInterceptor menuInterceptor = new MenuInterceptor(menuService);
+		MenuInterceptor menuInterceptor = new MenuInterceptor(menuService, loginUserBean);	
 		InterceptorRegistration reg1 = registry.addInterceptor(menuInterceptor);
+		CheckInterceptor checkLoginInterceptor = new CheckInterceptor(loginUserBean);
+		InterceptorRegistration reg2 = registry.addInterceptor(checkLoginInterceptor);
 		reg1.addPathPatterns("/**"); // 모든 요청
+		reg2.addPathPatterns("/user/modify", "/user/logout", "/board/*");
+		reg2.excludePathPatterns("/board/main");
 	}
 
 }

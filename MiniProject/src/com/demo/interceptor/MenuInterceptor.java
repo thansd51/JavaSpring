@@ -8,14 +8,18 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.demo.beans.BoardInfoBean;
+import com.demo.beans.LoginUserBean;
 import com.demo.service.MenuService;
 
 public class MenuInterceptor implements HandlerInterceptor {
 
 	private MenuService menuSerivce;
 
-	public MenuInterceptor(MenuService menuSerivce) {
+	private LoginUserBean loginUserBean;
+
+	public MenuInterceptor(MenuService menuSerivce, LoginUserBean loginUserBean) {
 		this.menuSerivce = menuSerivce;
+		this.loginUserBean = loginUserBean;
 	}
 
 	@Override
@@ -24,6 +28,7 @@ public class MenuInterceptor implements HandlerInterceptor {
 		// 테이블에서 게시판 이름들을 가져와 메뉴에 적용
 		List<BoardInfoBean> topMenuList = menuSerivce.getMenuList();
 		request.setAttribute("topMenuList", topMenuList);
+		request.setAttribute("loginUserBean", loginUserBean);
 
 		return true;
 	}

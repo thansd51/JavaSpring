@@ -6,26 +6,25 @@ import javax.validation.constraints.Size;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
-//UserBean의 객체를 loginUserBean 이름으로 세션에 등록함
 @Component("loginUserBean")
 @SessionScope
 public class LoginUserBean {
-	
+
 	private int user_idx;
 	private String user_name;
-	
-	@Size(min=4, max=20)
+
+	@Size(min = 4, max = 20)
 	@Pattern(regexp = "[a-zA-Z0-9]*")
 	private String user_id;
-	
-	@Size(min=4, max=20)
+
+	@Size(min = 4, max = 20)
 	@Pattern(regexp = "[a-zA-Z0-9]*")
 	private String user_pw;
-	
-	private boolean userLogin; //로그인 상태 
-	
+
+	private boolean userLogin; // 로그인 상태
+
 	public LoginUserBean() {
-		this.setUserLogin(false);
+		this.userLogin = false; // 처음 상태는 로그인 false
 	}
 
 	public int getUser_idx() {
