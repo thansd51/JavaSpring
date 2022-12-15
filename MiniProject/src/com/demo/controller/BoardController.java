@@ -2,6 +2,7 @@ package com.demo.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.demo.beans.ContentBean;
+import com.demo.beans.LoginUserBean;
+import com.demo.beans.PageBean;
 import com.demo.service.BoardService;
 
 @Controller
@@ -24,15 +27,22 @@ public class BoardController {
 	@Autowired
 	private BoardService boardService;
 
+	@Resource(name = "loginUserBean")
+	private LoginUserBean loginUserBean;
+
 	@GetMapping("main")
-	public String main(@RequestParam("board_info_idx") int board_info_idx, Model model) {
+	public String main(@RequestParam("board_info_idx") int board_info_idx, Model model,
+			@RequestParam(value = "page", defaultValue = "1") int page) {
 		model.addAttribute("board_info_idx", board_info_idx);
 
 		String boardInfoName = boardService.getBoardInfoName(board_info_idx);
 		model.addAttribute("boardInfoName", boardInfoName);
 
-		List<ContentBean> contentList = boardService.getContentList(board_info_idx);
+		List<ContentBean> contentList = boardService.getContentList(board_info_idx, page);
 		model.addAttribute("contentList", contentList);
+
+		PageBean pageBean = boardService.getContentCnt(board_info_idx, page);
+		model.addAttribute("pageBean", pageBean);
 
 		return "board/main";
 	}
@@ -41,6 +51,8 @@ public class BoardController {
 	public String read(@RequestParam("board_info_idx") int board_info_idx, @RequestParam("content_idx") int content_idx,
 			Model model) {
 		model.addAttribute("board_info_idx", board_info_idx);
+		model.addAttribute("content_idx", content_idx);
+		model.addAttribute("loginUserBean", loginUserBean);
 		// 글 번호로 DB에서 게시글 내용 읽어오기
 		ContentBean readContentBean = boardService.getContentInfo(content_idx);
 		model.addAttribute("readContentBean", readContentBean);
@@ -69,12 +81,37 @@ public class BoardController {
 	}
 
 	@GetMapping("modify")
-	public String modify() {
+	public String modify(@RequestParam("board_info_idx") int board_info_idx,
+			@RequestParam("content_idx") int content_idx, Model model,
+			@ModelAttribute("modifyContentBean") ContentBean modifyContentBean) {
+
+		modifyContentBean.setContent_board_idx(board_info_idx);
+		modifyContentBean.setContent_idx(content_idx);
+
+		boardService.getContents(modifyContentBean);
+		model.addAttribute("modifyContentBean", modifyContentBean);
+
 		return "board/modify";
 	}
 
+	@PostMapping("modify_pro")
+	public String modify_pro(@Valid @ModelAttribute("modifyContentBean") ContentBean modifyContentBean,
+			BindingResult result) {
+
+		if (result.hasErrors()) {
+			return "board/modify";
+		}
+
+		return "board/modify_success";
+	}
+
 	@GetMapping("delete")
-	public String delete() {
+	public String delete(@RequestParam("board_info_idx") int board_info_idx,
+			@RequestParam("content_idx") int content_idx, Model model) {
+
+		boardService.deleteContentInfo(content_idx);
+		model.addAttribute("board_info_idx", board_info_idx);
+
 		return "board/delete";
 	}
 }
