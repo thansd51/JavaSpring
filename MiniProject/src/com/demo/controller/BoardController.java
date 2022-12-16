@@ -80,6 +80,11 @@ public class BoardController {
 		return "board/write_success";
 	}
 
+	@GetMapping("not_writer")
+	public String not_writer() {
+		return "board/not_writer";
+	}
+
 	@GetMapping("modify")
 	public String modify(@RequestParam("board_info_idx") int board_info_idx,
 			@RequestParam("content_idx") int content_idx, Model model,
@@ -95,12 +100,14 @@ public class BoardController {
 	}
 
 	@PostMapping("modify_pro")
-	public String modify_pro(@Valid @ModelAttribute("modifyContentBean") ContentBean modifyContentBean,
+	public String modify_pro(@Valid @ModelAttribute("modifyContentBean") ContentBean modifyContentBean, Model model,
 			BindingResult result) {
 
 		if (result.hasErrors()) {
 			return "board/modify";
 		}
+
+		boardService.modifyContentInfo(modifyContentBean);
 
 		return "board/modify_success";
 	}
