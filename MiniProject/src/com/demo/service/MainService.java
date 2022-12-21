@@ -11,11 +11,11 @@ import com.demo.mapper.BoardMapper;
 
 @Service
 public class MainService {
-
+	
 	@Autowired
 	private BoardMapper boardMapper;
-
-	public List<ContentBean> getMainList(int board_info_idx) {
+	
+	public List<ContentBean> getMainList(int board_info_idx){
 		RowBounds rowBounds = new RowBounds(0, 5);
 		return boardMapper.getContentList(board_info_idx, rowBounds);
 	}

@@ -12,11 +12,13 @@ public class RestApiController {
 
 	@Autowired
 	private UserService userService;
-
-	@GetMapping("user/check/{user_id}")
+	
+	@GetMapping("/user/check/{user_id}")
 	public String checkUserIdExist(@PathVariable String user_id) {
+		// 유저 아이디가 없으면 true 있으면 false
 		boolean check = userService.checkuserIdExist(user_id);
 		
-		return check+"";
+		return check + ""; //true or false 리턴
 	}
+
 }

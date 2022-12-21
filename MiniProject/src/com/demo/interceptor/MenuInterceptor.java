@@ -13,24 +13,24 @@ import com.demo.service.MenuService;
 
 public class MenuInterceptor implements HandlerInterceptor {
 
-	private MenuService menuSerivce;
-
+	
+	private MenuService menuService;
 	private LoginUserBean loginUserBean;
-
-	public MenuInterceptor(MenuService menuSerivce, LoginUserBean loginUserBean) {
-		this.menuSerivce = menuSerivce;
+	
+	//생성자 주입
+	public MenuInterceptor(MenuService menuService, LoginUserBean loginUserBean) {
+		this.menuService = menuService;
 		this.loginUserBean = loginUserBean;
 	}
-
+	
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		// 테이블에서 게시판 이름들을 가져와 메뉴에 적용
-		List<BoardInfoBean> topMenuList = menuSerivce.getMenuList();
+		//테이블에서 게시판이름들을 가져와 메뉴에 전달하기
+		List<BoardInfoBean> topMenuList = menuService.getMenuList();
 		request.setAttribute("topMenuList", topMenuList);
 		request.setAttribute("loginUserBean", loginUserBean);
-
+		
 		return true;
 	}
-
 }

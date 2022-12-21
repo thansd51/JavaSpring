@@ -53,7 +53,7 @@
               <c:choose>
                 <c:when test="${pageBean.prevPage <= 0 }">
 				  <li class="page-item disabled">
-					<a href="${root }board/main?board_info_idx=${board_info_idx}&page=${pageBean.prevPage}" class="page-link">이전</a>
+					<a href="#" class="page-link">이전</a>
 				  </li>
                 </c:when>
                 <c:otherwise>

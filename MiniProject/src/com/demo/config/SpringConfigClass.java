@@ -66,13 +66,13 @@ public class SpringConfigClass extends AbstractAnnotationConfigDispatcherServlet
 		CharacterEncodingFilter encodingFilter = new CharacterEncodingFilter();
 		encodingFilter.setEncoding("UTF-8");
 		return new Filter[] {encodingFilter};
-	}	
+	}
 	
 	@Override
 	protected void customizeRegistration(Dynamic registration) {
-		
+
 		super.customizeRegistration(registration);
-		
+		//이미지나 파일의 용량을 하나는 5메가바이트 한번에 업로드 가능 50메가
 		MultipartConfigElement config1 = new MultipartConfigElement(null, 5242880, 52428800, 0);
 		registration.setMultipartConfig(config1);
 	}
